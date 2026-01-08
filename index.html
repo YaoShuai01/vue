@@ -1,0 +1,281 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>42娱乐站</title>
+<style type="text/css">
+/*总体*/
+
+* {
+	margin: 0;
+	padding: 0
+}
+body {
+	background: url(img/background.jpg)
+}
+#all {
+	width: 1036px;
+	margin: 0 auto;
+	margin-top: 25px
+}
+.clear {
+	clear: both
+}
+/*<!-- 1、导航条-->*/
+#head {
+	background: url(img/top-head-1.jpg);
+	height: 35px;
+}
+#head ul {
+	margin: 0 auto
+}
+#head ul li {
+	float: left;
+	padding: 0 20px;
+	list-style: none;
+	line-height: 35px
+}
+#head ul li a {
+	text-decoration: none;
+	color: white;
+	font-size: 14px;
+	padding-left: 50px;
+	border-left: 2px solid #c15f2c
+}
+#head ul li a:hover {
+	color: #CCC
+}
+/*<!-- 2、logo或者头图-->*/
+#logo {
+	height: 125px;
+	background-color: white
+}
+.top1 {
+	float: right;
+	margin-top: 20px;
+	margin-right: 40px
+}
+.top3 {
+	float: left;
+	margin-top: 10px;
+	margin-left: 30px
+}
+.top2 {
+	width: 400px;
+	height: 40px;
+	margin-top: 40px;
+	margin-left: 100px
+}
+/*<!-- 3、主要内容-->*/
+#content {
+	border-top: 1px solid #999;
+	background: #FFF
+}
+#content h4 {
+	color: #C60;
+	float: left;
+	margin: 10px 0 10px 30px
+}
+#content h5 {
+	color: #F00;
+	margin: 13px 0 10px -10px
+}
+#content h5 p {
+	color: #999;
+	float: right;
+	margin: 0px 30px 10px 0
+}
+/*已经完成顶端广告条，下面开始主要内容导航条制作*/
+#content-head {
+	background-color: #FFF;
+	height: 510px;
+	background-image: url(img/xian-1.png);
+	background-repeat: repeat-x;
+	padding-top: 5px
+}
+/*右侧导航*/
+#content-head-right{ float:right;
+	margin-top:10px;
+	margin-right:10px}
+#content-head-right li{ float:left;
+	list-style:none;
+	padding:1px 8px;
+	border:1px solid #999}
+#content-head-right li a{ color:#000;
+	font-size:12px;
+	text-decoration:none;}
+	/*热门电影*/
+#hot{ float:right; margin-right:10px}
+#hot li{ float:left; list-style:none; bottom:0; position:relative}
+#hot li:hover{ bottom:30px;
+	transition:all 2s;}
+#hot li img{ padding:2px; 
+	border:1px solid #CCC;
+	margin:0 20px}
+#hot li p{ font-size:12px;
+	color:#000;
+	text-align:center}
+#hot li p a{ text-decoration:none;
+	color:#000}
+#hot .StyleForBottom li{ padding-top:15px;
+	border-top:1px dotted #CCC;
+	border-bottom:1px solid #CCC;
+	margin-bottom:20px;}
+	/*左侧导航*/
+#content-head-left{
+	width:150px;
+	height:330px;
+	border:1px solid #CCC;
+	margin:-7px 0 0 20px}
+#content-head-left li{ padding-top:5px;
+	padding-bottom:5px;
+	list-style:none;
+	border-bottom:1px dotted #ccc}
+#content-head-left li a{
+	text-decoration:none;
+	font-size:12px;
+	color:#000;
+	margin-left:20px;
+	margin-top:5px;
+	padding-left:20px;
+	background-image:url(img/button-1.png);
+	background-repeat:no-repeat}
+	/*底端广告*/
+#content-bottom .FirstPic{ float:left;
+	margin-top: 20px;
+	margin-left:20px;
+	border:1px solid #ccc;
+	padding:8px}
+#content-bottom .SecondPic{ border:1px solid #CCC;
+	padding:2px;
+	margin-left:5px;
+	margin-top:5px;
+	}	
+/*<!-- 4、页脚-->*/
+#footer{
+	height:186px;
+	background-image:url(img/footer.jpg)}
+#footer p{
+	text-align:center;
+	padding-top:160px;
+	color:#CCC}
+</style>
+</head>
+
+<body>
+<div id="all">
+  <div id="top"> 
+    <!-- 1、导航条-->
+    <div id="head">
+      <ul>
+        <li><a href="#" style="border-left:none" onMouseDown="alert('当前页就是首页')">首页</a></li>
+        <li><a href="list.html">热门电影</a></li>
+        <li><a href="detail.html">电影详情</a></li>
+        <li><a href="moviePlay.html">影视播放</a></li>
+        <li><a href="register.html">登录注册</a></li>
+		<li><a href="short-video.html" style="color: #fff;">短视频专区</a></li>
+      </ul>
+    </div>
+    <div class=" clear"></div>
+    <!-- 2、logo或者头图-->
+    <div id="logo"> <img src="img/top-1.jpg" class="top1">
+      <input type="text" class="top2">
+      <input type="button" value="搜索">
+      <img src="img/top-3.jpg" class="top3"> </div>
+  </div>
+  <!-- 3、主要内容-->
+  <div id="content">
+    <h4>站长公告：</h4>
+    <h5>欢迎来到42娱乐站。。。。
+      <p>在线人数：88人</p>
+    </h5>
+    <div id="content-head"> <img src="img/conter-top-1.png"> 
+      <!-- 第一列，右侧-->
+      <div id="content-head-right">
+        <ul>
+          <li><a href="#">推荐</a></li>
+          <li><a href="#">电视剧专栏</a></li>
+          <li><a href="#">电影专栏</a></li>
+          <li><a href="#">动画专栏</a></li>
+          <li><a href="#">综艺节目</a></li>
+          <li><a href="#">高清剧集</a></li>
+          <li><a href="#">体育赛事</a></li>
+          <li><a href="#">漫画播报</a></li>
+          <li><a href="#">校园自拍</a></li>
+          <li><a href="#">休闲游</a></li>
+          <li><a href="#">有声读物</a></li>
+          <li><a href="#">教学视频</a></li>
+          <li><a href="#">经典剧集</a></li>
+        </ul>
+      </div>
+      <!-- 热门电影-->
+      <div id="hot">
+      	<ul>
+        	<li><a href="#"><img src="img/1.jpg" width="94" height="125"></a>
+            <p><a href="#">大阅兵</a></p>
+            </li>
+            <li><a href="#"><img src="img/2.jpg" width="94" height="125"></a>
+            <p><a href="#">小时代</a></p>
+            </li>
+            <li><a href="#"><img src="img/3.jpg" width="94" height="125"></a>
+            <p><a href="#">大圣归来</a></p>
+            </li>
+            <li><a href="#"><img src="img/4.jpg" width="94" height="125"></a>
+            <p><a href="#">爱乐之城</a></p>
+            </li>
+            <li><a href="#"><img src="img/5.jpg" width="94" height="125"></a>
+            <p><a href="#">速度与激情</a></p>
+            </li>
+            <li><a href="#"><img src="img/6.jpg" width="94" height="125"></a>
+            <p><a href="#">冰河时代</a></p>
+            </li>
+        </ul>
+        <ul class="StyleForBottom">
+        	<li><a href="#"><img src="img/7.jpg" width="94" height="125"></a>
+            <p><a href="#">进击巨人</a></p>
+            </li>
+            <li><a href="#"><img src="img/8.jpg" width="94" height="125"></a>
+            <p><a href="#">阿甘正传</a></p>
+            </li>
+            <li><a href="#"><img src="img/9.jpg" width="94" height="125"></a>
+            <p><a href="#">魔戒</a></p>
+            </li>
+            <li><a href="#"><img src="img/10.jpg" width="94" height="125"></a>
+            <p><a href="#">王牌特工</a></p>
+            </li>
+            <li><a href="#"><img src="img/11.jpg" width="94" height="125"></a>
+            <p><a href="#">魔兽世界</a></p>
+            </li>
+            <li><a href="#"><img src="img/12.jpg" width="94" height="125"></a>
+            <p><a href="#">沉默的羔羊</a></p>
+            </li>
+        </ul>
+      </div>
+      <!-- 第二列，左侧-->
+      <div id="content-head-left">
+      	<ul>
+        <li><a href="#">电视剧专栏</a></li>
+          <li><a href="#">电影专栏</a></li>
+          <li><a href="#">动画专栏</a></li>
+          <li><a href="#">综艺节目</a></li>
+          <li><a href="#">高清剧集</a></li>
+          <li><a href="#">体育赛事</a></li>
+          <li><a href="#">漫画播报</a></li>
+          <li><a href="#">校园自拍</a></li>
+          <li><a href="#">休闲游</a></li>
+          <li><a href="#">有声读物</a></li>
+        </ul>
+      </div>
+      <div id="content-bottom">
+      <a href="#"><img src="img/center-1.jpg" width="130" height="60" class="FirstPic"></a>
+      <a href="#"><img src="img/center-2.jpg" width="854" height="70" class="SecondPic"></a>
+      </div>
+    </div>
+  </div>
+  <!-- 4、页脚-->
+  <div id="footer">
+  <p>感谢大家努力学习，网页开发有你更精彩</p>
+  </div>
+</div>
+</body>
+</html>

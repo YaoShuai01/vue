@@ -1,0 +1,358 @@
+<!doctype html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>42娱乐站</title>
+	<style type="text/css">
+		/*********************************整体的美化*******************************************/	
+
+		* {
+			margin: 0;
+			padding: 0
+		}
+		body {
+			background: url(img/background.jpg)
+		}
+		#all {
+			width: 1036px;
+			margin: 0 auto;
+			margin-top: 25px
+		}
+		.clear {
+			clear: both
+		}
+		/*************************************导航条部分*************************************/	
+		#head {
+			background: url(img/top-head-1.jpg);
+			height: 35px;
+		}
+		#head ul {
+			margin: 0 auto
+		}
+		#head ul li {
+			float: left;
+			padding: 0 20px;
+			list-style: none;
+			line-height: 35px
+		}
+		#head ul li a {
+			text-decoration: none;
+			color: white;
+			font-size: 14px;
+			padding-left: 50px;
+			border-left: 2px solid #c15f2c
+		}
+		/***************************导航条部分悬浮使用了CSS3动画animation***************/	
+		@keyframes myHover{
+			10%{ color: #F00 }
+			50%{ color: #FF0 }
+			75%{ color: #0F0 }
+			100%{ color: #00F }
+		}
+		#all #head li a:hover{
+			animation:myHover 5s infinite alternate; 
+		}
+
+		/********************************** logo或者头图*********************************/
+		#logo {
+			height: 125px;
+			background-color: white
+		}
+		.top1 {
+			float: right;
+			margin-top: 20px;
+			margin-right: 40px
+		}
+		.top3 {
+			float: left;
+			margin-top: 10px;
+			margin-left: 30px
+		}
+		.top2 {
+			width: 400px;
+			height: 40px;
+			margin-top: 40px;
+			margin-left: 100px
+		}
+
+		.text{
+			clear:both;
+			width:445px;
+			height:30px;
+			border:1px #a22d0f solid;
+		}
+		.text a:hover,a:visited{
+			border:1px #a22d0f solid;
+		}	
+		.top3{
+			margin-top:10px;
+		}
+
+
+		#clear{
+			clear:both;
+		}	
+
+		/*********************center-bottom*************************************/	
+		/********************************************center-bottom****************************************************************/	
+		#center-bottom{
+			height:1050px;
+			background-color:#FFF;
+		}
+		#center-bottom-right-head {
+			margin-left:-8px;
+		}
+		#bottom-right{
+			width:270px;
+			border:1px solid #CCC;
+			float:right;
+			margin-right:17px;
+			margin-top:-10px;
+		}	
+		#bottom-right li{
+			list-style:none;
+			margin-top:10px;
+		}
+		#bottom-right span{
+			font-size:12px;
+			border:1px solid #CCC;
+			padding:2px 4px;
+			color:#CCC;
+		}
+		#bottom-right span.dif{
+			border:none;
+			background-color:#900;
+			color:#FFF;
+		}	
+		#bottom-right li a{
+			text-decoration:none;
+			font-size:12px;
+			color:#000;
+			margin-left:10px;
+		}
+		#bottom-right ul{
+			margin-left:-20px;
+			margin-top:21px;
+		}
+		#bottom-right img{
+			margin-right:15px;
+			margin-top:20px;
+			padding:1px;
+			border:1px solid #CCC;
+			float:left;
+			margin-left:20px;
+		}
+		#bottom-right li p{
+			font-size:14px;
+			color:#CCC;
+		}
+		#bottom-right li a:hover{
+			color:#C00;
+		}
+		/*******************************************center-left****************************************************************************/	
+		#center-bottom-left{
+			width:711px;
+			height:920px;
+			border:1px solid #CCC;
+			margin-left:20px;
+			margin-top:-10px;
+		}
+		#center-bottom-left li{
+			list-style:none;
+		}
+		#center-bottom-left li span{
+			float:left;
+			font-size:12px;
+			color:#F00;
+		}
+		#center-bottom-left li h3 a{
+			margin-left:20px;
+			text-decoration:none;
+			font-size:12px;
+			color:#000;
+		}
+		#center-bottom-left li p{
+			margin-top:-10px;
+			line-height:1.5em;
+			font-size:12px;
+			color:#999;
+			margin-top: 10px
+		}
+		#center-bottom-left ul img.one{
+			float:left;
+			clear:left;
+		}
+		#center-bottom-left ul img.two{
+			margin-top:30px;
+			float:left;
+			clear:left;
+		}
+		#center-bottom-left ul img.three{
+			margin-top:30px;
+			float:left;
+			clear:left;
+		}
+		##center-bottom-left li.three{
+			margin-top:90px;
+		}	
+		#center-bottom-left li.one{
+			margin-top:90px;
+		}	
+		#center-bottom-left li.two{
+			margin-top:50px;
+		}
+		#center-bottom-left .fall a{
+			text-decoration:none;
+			font-size:12px;
+			color:#000;
+		}
+		#center-bottom-left .fall li{
+			float:left;
+			padding:4px 8px;
+			border:1px solid #CCC;
+		}	
+		#center-bottom-left .fall{
+			margin-top:70px;
+			margin-left:50px;
+		}	
+		#center-bottom-left .fall li:hover{
+			background-color:#FC9;
+		}
+
+
+		/********影片排行部分********/
+		.titleLeft{margin:11px 5px;padding-left:0;background:none;color:#1f1f1f;font-size:14px;}
+		.pink{float:left;width:3px;height:18px;background:#DE6D34;margin-right:5px;}
+		.list a,.picNewsDisplay .picNewsRightTitle,.picNewsDisplay .picTitle{padding:0 10px;width:95%;display:block;overflow:hidden;height:36px;border-bottom:dotted 1px #c4c4c4;color:#6f6f6f;line-height:36px}
+		.list a:active,.picNewsDisplay .picNewsRightTitle:active,.picNewsDisplay .picTitle:active{background:#c4c4c4}
+		.list a:visited{color:#6f6f6f;}
+		.list a span{color:#F00}
+		.link{height:40px;float:right}
+		.link a{padding:13px 8px 12px 8px;font-size:16px;color:#6c6c6c;line-height:40px;border-left:solid 1px #cbcbcb}
+		.link a:active{background:#cbcbcb}
+		.link a:visited{color:#6c6c6c;}
+
+
+		/**********页脚部分***********************/
+
+
+		/*************************/	
+		#footer{
+			margin-top:-20px;
+			width:1036px;
+			height:183px;
+			background-image:url(img/footer.jpg);
+		}	
+		#footer p{
+			padding-top:162px;
+			text-align:center;
+			font-size:12px;
+			color:#CCC;
+		}	
+	</style>
+</head>
+
+<body>
+	<div id="tou">
+	</div>
+	<div id="all">
+		<div id="top"> 
+			<!-- 1、导航条-->
+			<div id="head">
+				<ul>
+					 <li><a href="index.html" style="border-left:none">首页</a></li>
+       	 <li><a href="list.html">热门电影</a></li>
+        <li><a href="detail.html">电影详情</a></li>
+        <li><a href="moviePlay.html">影视播放</a></li>
+        <li><a href="register.html">登录注册</a></li>
+		<li><a href="short-video.html" style="color: #fff;">短视频专区</a></li>
+				</ul>
+			</div>
+			<div class=" clear"></div>
+			<!-- 2、logo或者头图-->
+			<div id="logo"> <img src="img/top-1.jpg" class="top1">
+				<input type="text" class="top2">
+				<input type="button" value="搜索" style="width: 60px; height: 44px">
+				<img src="img/top-3.jpg" class="top3"> </div>
+			</div>		
+			<div id="center-bottom">
+				<div id="center-bottom-right-head">
+					<img src="img/center-bottom-head.png" width="1051" height="48" />
+				</div>
+				<div id="bottom-right">
+					<img src="img/GuardiansoftheGalaxy.png" width="61" height="84" />
+					<ul>
+						<li><span class="dif">01</span><a href="#">银河护卫队2</a><p>主演：影片由范·迪塞尔克里斯·帕拉特佐伊·索尔达娜等联袂主演。</p></li>
+						<div style="margin-left: 44px">
+							<li><span class="dif">02</span><a href="#">战狼2</a></li>
+							<li><span class="dif">03</span><a href="#">金刚：骷髅岛</a></li>
+							<li><span class="dif">04</span><a href="#">星际特工：千星之城</a></li>
+							<li><span class="dif">05</span><a href="#">速度与激情8</a></li>
+							<li><span>06</span><a href="#">星际穿越</a></li>
+							<li><span>07</span><a href="#">三生三世十里桃花</a></li>
+							<li><span>08</span><a href="#">悟空传</a></li>
+							<li><span>09</span><a href="#">重庆森林</a></li>
+							<li><span>10</span><a href="#">建军大业 </a></li>
+						</div>
+					</ul>
+				</div>
+				<div id="center-bottom-left">
+					<ul>
+						<a href="detail.html"><img class="one" src="img/wolf2.png" width="122" height="122" /></a>
+						<li class="three"><span>[电影专栏]</span>
+							<h3><a href="detail.html">【喜剧/动作】战狼2</a></h3>
+							<p>发布于 2017-07-28</p>
+							<p>主演：吴京、弗兰克·格里罗、卢靖姗、张翰。战狼2》又名血战狼，是由导演吴京自编自导自演的一部动作军事战争大片。影片由吴京、余男、邹凯等领衔主演，主人公冷锋在他国流浪度日却意外卷入一场战争的故事…</p></li>
+							<a href="#"><img class="two" src="img/mylife.png" width="122" height="123" /></a>
+							<li class="one"><span>[电视剧专栏]</span>
+								<h3><a href="#">【爱情】【治愈】我的前半生</a></h3>
+								<p>发布于 2017-04-03</p>
+								<p>《全职太太罗子君沉溺在养尊处优的生活中，丝毫没有察觉到潜藏的婚姻危机。直到一日丈夫俊生突然提出离婚，对结婚八年的子君无异于晴天霹雳。子君无法接受这个残酷的事实，一心想挽回俊生...</p></li>
+								<a href="#"><img class="three" src="img/narto.png" width="127" height="121" /></a>
+								<li class="two"><span>[动画专栏]</span>
+									<h3><a href="#">【动画】火影忍者疾风传 电影版 </a></h3>
+									<p>发布于 2015-09-03</p>
+									<p>这是一个忍者的世界。在Naruto的世界中，忍者这个职业，就像HunterXHunter里的猎人、One Piece里的海盗一样，是少年们的梦想！不过这回的主人公鸣人和…</p></li>
+								</ul>
+								<div>
+									<div class="moduleTitle">
+										<a href="#">
+											<div class="titleLeft"><div class="pink"></div>影片排行</div></a>
+											<div class="link">
+												<a href="#">视频排行</a>
+												<a href="#">票房排行</a>
+											</div>
+										</div>
+
+										<div class="screem640">
+											<div class="moduleCont">
+												<div class="list">
+													<a href="#"><span>[1] </span>摔跤吧！爸爸</a><a href="#"><span>[2] </span>阿甘正传</a><a href="#"><span>[3] </span>你的名字</a><a href="#"><span>[4] </span>让子弹飞</a><a href="#"><span>[5] </span>湄公河行动</a>                    </div>
+												</div>
+												<div class="moduleCont">
+													<div class="list">
+														<a href="#"><span>[6] </span>老炮儿</a><a href="#"><span>[7] </span>三傻大闹宝莱坞</a><a href="#"><span>[8] </span>忠犬八公的故事</a><a href="#"><span>[9] </span>举起手来</a><a href="#"><span>[10] </span>这个杀手不太冷</a>                    </div>
+													</div>
+												</div>
+											</div>    
+											<ul class="fall">
+												<li><a href="#">首页</a></li>
+												<li><a href="#">1</a></li>
+												<li><a href="#">2</a></li>
+												<li><a href="#">3</a></li>
+												<li><a href="#">4</a></li>
+												<li><a href="#">5</a></li>
+												<li><a href="#">6</a></li>
+												<li><a href="#">7</a></li>
+												<li><a href="#">8</a></li>
+												<li><a href="#">下一页</a></li>
+												<li><a href="#">最末页</a></li>
+											</ul>
+										</div>
+									</div>
+									<!-- 4、页脚-->
+									<div id="footer">
+										<p>感谢大家努力学习，网页开发有你更精彩</p>
+									</div>
+								</div>
+							</body>
+							</html>

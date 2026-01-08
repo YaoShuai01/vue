@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>42娱乐站 - 短视频专区</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: url(img/background.jpg);
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+
+        /* 页面容器 */
+        #container {
+            width: 1036px;
+            margin: 0 auto;
+            padding: 25px 0;
+        }
+
+        /* 导航栏样式（与主站保持一致） */
+        #header {
+            background: url(img/top-head-1.jpg);
+            height: 35px;
+            margin-bottom: 20px;
+        }
+
+        #header ul {
+            list-style: none;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%;
+        }
+
+        #header ul li {
+            padding: 0 20px;
+        }
+
+        #header ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            padding-left: 50px;
+            border-left: 2px solid #c15f2c;
+        }
+
+        #header ul li:first-child a {
+            border-left: none;
+        }
+
+        #header ul li a:hover {
+            color: #ccc;
+        }
+
+        /* 短视频选项卡导航 */
+        .tab-nav {
+            background: #fff;
+            border-radius: 8px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-list {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            list-style: none;
+            overflow-x: auto;
+            padding: 10px 0;
+            scrollbar-width: none; /* 隐藏滚动条 */
+        }
+
+        .tab-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-item {
+            padding: 8px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            font-size: 15px;
+        }
+
+        .tab-item.active {
+            background: #c15f2c;
+            color: #fff;
+        }
+
+        .tab-item:hover:not(.active):not(.creator-tab) {
+            background: #f5f5f5;
+        }
+
+        /* 创作者中心特殊样式 */
+        .creator-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .creator-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #c15f2c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* 搜索框样式 */
+        .search-tab {
+            position: relative;
+            width: 180px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 15px 8px 35px;
+            border: 1px solid #eee;
+            border-radius: 20px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            display: none;
+            background: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-btn.show {
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #f5f5f5;
+        }
+
+        /* 短视频标题 */
+        .short-video-title {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #c15f2c;
+            display: none;
+        }
+
+        .short-video-title.show {
+            display: block;
+        }
+
+        /* 短视频网格布局 - 竖版排版 */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            padding: 0 10px;
+        }
+
+        /* 视频卡片样式 - 竖版 */
+        .video-card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 竖版视频封面 */
+        .video-cover {
+            width: 100%;
+            height: 400px; /* 竖版高度 */
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 播放图标样式 */
+        .play-icon {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 2;
+        }
+
+        .play-icon::after {
+            content: "";
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 10px 0 10px 16px;
+            border-color: transparent transparent transparent #ffffff;
+            margin-left: 4px;
+        }
+
+        .video-card:hover .play-icon {
+            background: #c15f2c;
+            transform: scale(1.1);
+        }
+
+        /* 视频标题 */
+        .video-title {
+            padding: 12px 15px;
+            font-size: 16px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 内容区域（各选项卡内容） */
+        .content-section {
+            display: none;
+            min-height: 400px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* 空状态样式 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        /* 加载中样式 */
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px 0;
+            color: #666;
+            font-size: 14px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        /* 创作者中心样式（参考抖音/快手布局） */
+        .creator-dashboard {
+            padding: 0;
+        }
+
+        /* 创作者头部信息 */
+        .creator-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .avatar-big {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #c15f2c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+
+        .creator-info {
+            flex: 1;
+        }
+
+        .creator-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .creator-id {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .edit-btn {
+            padding: 6px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* 数据统计卡片 */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #c15f2c;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 功能导航 */
+        .creator-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .creator-nav-item {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .creator-nav-item:hover {
+            background: #f0f0f0;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #c15f2c;
+        }
+
+        .nav-label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* 我的作品区域 */
+        .my-works {
+            padding: 0 20px 20px;
+        }
+
+        .works-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .work-item {
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .work-cover {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .work-stats {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 子页面样式 */
+        .sub-page {
+            display: none;
+            padding: 20px;
+        }
+
+        .sub-page.active {
+            display: block;
+        }
+
+        .sub-page-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .back-sub-btn {
+            margin-bottom: 20px;
+            padding: 8px 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* 视频播放弹窗 */
+        .video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .video-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .modal-video {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+        }
+
+        /* 页脚样式（与主站保持一致） */
+        #footer {
+            height: 186px;
+            background-image: url(img/footer.jpg);
+            margin-top: 40px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 20px;
+        }
+
+        #footer p {
+            color: #ccc;
+            text-align: center;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 1050px) {
+            #container {
+                width: 95%;
+            }
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .video-cover {
+                height: 320px;
+            }
+
+            .tab-list {
+                justify-content: flex-start;
+            }
+
+            .search-tab {
+                width: 140px;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .creator-nav {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .works-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- 顶部导航栏 -->
+        <div id="header">
+            <ul>
+                <li><a href="index.html" style="border-left:none">首页</a></li>
+                <li><a href="list.html">热门电影</a></li>
+                <li><a href="detail.html">电影详情</a></li>
+                <li><a href="moviePlay.html">影视播放</a></li>
+                <li><a href="register.html">登录注册</a></li>
+                <li><a href="short-video.html" style="color: #fff;">短视频专区</a></li>
+            </ul>
+        </div>
+
+        <!-- 返回按钮 -->
+        <button class="back-btn" id="backBtn" onclick="goBackToTab()">← 返回</button>
+
+        <!-- 短视频选项卡导航 -->
+        <div class="tab-nav">
+            <ul class="tab-list" id="tabList">
+                <li class="tab-item active" data-tab="recommend">推荐</li>
+                <li class="tab-item" data-tab="local">同城</li>
+                <li class="tab-item" data-tab="live">直播</li>
+                <li class="tab-item" data-tab="favorite">我的喜欢</li>
+                <li class="tab-item search-tab">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="搜索短视频..." onfocus="switchToSearch()">
+                </li>
+                <li class="tab-item creator-tab" data-tab="creator">
+                    <div class="creator-avatar">创</div>
+                    <span>创作者中心</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 短视频标题（仅推荐页显示） -->
+        <h2 class="short-video-title show" id="videoTitle">热门短视频</h2>
+
+        <!-- 推荐内容（视频网格） -->
+        <div class="content-section active" id="recommendContent">
+            <div class="video-grid" id="videoGrid">
+                <!-- 视频卡片会通过JS动态生成 -->
+            </div>
+            <div class="loading" id="loading">加载中...</div>
+        </div>
+
+        <!-- 同城内容 -->
+        <div class="content-section" id="localContent">
+            <div class="empty-state">
+                <div class="empty-icon">📍</div>
+                <h3>同城短视频</h3>
+                <p>正在为你加载附近的精彩内容...</p>
+            </div>
+        </div>
+
+        <!-- 直播内容 -->
+        <div class="content-section" id="liveContent">
+            <div class="empty-state">
+                <div class="empty-icon">📺</div>
+                <h3>直播专区</h3>
+                <p>暂无正在进行的直播，敬请期待！</p>
+            </div>
+        </div>
+
+        <!-- 我的喜欢内容 -->
+        <div class="content-section" id="favoriteContent">
+            <div class="empty-state">
+                <div class="empty-icon">❤️</div>
+                <h3>我的喜欢</h3>
+                <p>你还没有收藏任何短视频，快去添加吧！</p>
+            </div>
+        </div>
+
+        <!-- 搜索内容 -->
+        <div class="content-section" id="searchContent">
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>搜索结果</h3>
+                <p>请在顶部搜索框输入关键词进行搜索</p>
+            </div>
+        </div>
+
+        <!-- 创作者中心内容（参考抖音/快手布局） -->
+        <div class="content-section creator-dashboard" id="creatorContent">
+            <!-- 创作者主页面 -->
+            <div class="creator-main active" id="creatorMain">
+                <!-- 头部信息 -->
+                <div class="creator-header">
+                    <div class="avatar-big">创</div>
+                    <div class="creator-info">
+                        <div class="creator-name">42娱乐创作者</div>
+                        <div class="creator-id">ID: 42888666</div>
+                        <button class="edit-btn" onclick="switchCreatorSubPage('profile')">编辑资料</button>
+                    </div>
+                </div>
+
+                <!-- 数据统计卡片 -->
+                <div class="stats-cards">
+                    <div class="stat-card" onclick="switchCreatorSubPage('fans')">
+                        <div class="stat-value">12.5w</div>
+                        <div class="stat-label">粉丝数量</div>
+                    </div>
+                    <div class="stat-card" onclick="switchCreatorSubPage('follows')">
+                        <div class="stat-value">386</div>
+                        <div class="stat-label">关注数量</div>
+                    </div>
+                    <div class="stat-card" onclick="switchCreatorSubPage('likes')">
+                        <div class="stat-value">89.6w</div>
+                        <div class="stat-label">累计获赞</div>
+                    </div>
+                    <div class="stat-card" onclick="switchCreatorSubPage('income')">
+                        <div class="stat-value">¥12,856</div>
+                        <div class="stat-label">累计创收</div>
+                    </div>
+                </div>
+
+                <!-- 功能导航 -->
+                <div class="creator-nav">
+                    <div class="creator-nav-item" onclick="switchCreatorSubPage('publish')">
+                        <div class="nav-icon">✍️</div>
+                        <div class="nav-label">发布作品</div>
+                    </div>
+                    <div class="creator-nav-item" onclick="switchCreatorSubPage('analytics')">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-label">流量分析</div>
+                    </div>
+                    <div class="creator-nav-item" onclick="switchCreatorSubPage('data')">
+                        <div class="nav-icon">📈</div>
+                        <div class="nav-label">数据中心</div>
+                    </div>
+                    <div class="creator-nav-item" onclick="switchCreatorSubPage('wallet')">
+                        <div class="nav-icon">💰</div>
+                        <div class="nav-label">我的钱包</div>
+                    </div>
+                    <div class="creator-nav-item" onclick="switchCreatorSubPage('settings')">
+                        <div class="nav-icon">⚙️</div>
+                        <div class="nav-label">创作者设置</div>
+                    </div>
+                    <div class="creator-nav-item" onclick="switchCreatorSubPage('help')">
+                        <div class="nav-icon">❓</div>
+                        <div class="nav-label">创作学院</div>
+                    </div>
+                </div>
+
+                <!-- 我的作品 -->
+                <div class="my-works">
+                    <div class="works-title" onclick="switchCreatorSubPage('works')">我的作品 (8)</div>
+                    <div class="works-grid">
+                        <div class="work-item">
+                            <img src="https://picsum.photos/seed/work1/400/300" alt="作品1" class="work-cover">
+                            <div class="work-stats">
+                                <span>👁️ 12.8w</span>
+                                <span>❤️ 2.5w</span>
+                            </div>
+                        </div>
+                        <div class="work-item">
+                            <img src="https://picsum.photos/seed/work2/400/300" alt="作品2" class="work-cover">
+                            <div class="work-stats">
+                                <span>👁️ 8.6w</span>
+                                <span>❤️ 1.8w</span>
+                            </div>
+                        </div>
+                        <div class="work-item">
+                            <img src="https://picsum.photos/seed/work3/400/300" alt="作品3" class="work-cover">
+                            <div class="work-stats">
+                                <span>👁️ 15.2w</span>
+                                <span>❤️ 3.1w</span>
+                            </div>
+                        </div>
+                        <div class="work-item">
+                            <img src="https://picsum.photos/seed/work4/400/300" alt="作品4" class="work-cover">
+                            <div class="work-stats">
+                                <span>👁️ 9.4w</span>
+                                <span>❤️ 1.2w</span>
+                            </div>
+                        </div>
+                        <div class="work-item">
+                            <img src="https://picsum.photos/seed/work5/400/300" alt="作品5" class="work-cover">
+                            <div class="work-stats">
+                                <span>👁️ 11.7w</span>
+                                <span>❤️ 2.8w</span>
+                            </div>
+                        </div>
+                        <div class="work-item">
+                            <img src="https://picsum.photos/seed/work6/400/300" alt="作品6" class="work-cover">
+                            <div class="work-stats">
+                                <span>👁️ 7.9w</span>
+                                <span>❤️ 1.5w</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 创作者子页面 - 粉丝数量 -->
+            <div class="sub-page" id="fansPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">粉丝数量</div>
+                <div class="empty-state">
+                    <div class="empty-icon">👥</div>
+                    <h3>粉丝数据</h3>
+                    <p>总粉丝数：125,896</p>
+                    <p>今日新增：+245</p>
+                    <p>7天新增：+1,892</p>
+                </div>
+            </div>
+
+            <!-- 创作者子页面 - 关注数量 -->
+            <div class="sub-page" id="followsPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">关注数量</div>
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    <h3>我的关注</h3>
+                    <p>总关注数：386</p>
+                    <p>已分组：218</p>
+                    <p>未分组：168</p>
+                </div>
+            </div>
+
+            <!-- 创作者子页面 - 累计获赞 -->
+            <div class="sub-page" id="likesPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">累计获赞</div>
+                <div class="empty-state">
+                    <div class="empty-icon">❤️</div>
+                    <h3>获赞数据</h3>
+                    <p>累计获赞：896,521</p>
+                    <p>今日获赞：+1,258</p>
+                    <p>作品平均获赞：112,065</p>
+                </div>
+            </div>
+
+            <!-- 创作者子页面 - 累计创收 -->
+            <div class="sub-page" id="incomePage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">累计创收</div>
+                <div class="empty-state">
+                    <div class="empty-icon">💰</div>
+                    <h3>收益数据</h3>
+                    <p>累计收益：¥12,856.00</p>
+                    <p>本月收益：¥1,589.00</p>
+                    <p>可提现金额：¥8,652.00</p>
+                </div>
+            </div>
+
+            <!-- 创作者子页面 - 流量分析 -->
+            <div class="sub-page" id="analyticsPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">流量分析</div>
+                <div class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <h3>流量数据</h3>
+                    <p>总播放量：1,258,963</p>
+                    <p>平均播放时长：45秒</p>
+                    <p>完播率：68.5%</p>
+                    <p>分享率：8.2%</p>
+                </div>
+            </div>
+
+            <!-- 其他子页面（简化版） -->
+            <div class="sub-page" id="profilePage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">编辑资料</div>
+                <div class="empty-state">
+                    <div class="empty-icon">✏️</div>
+                    <h3>个人资料编辑</h3>
+                    <p>昵称、头像、简介等信息编辑功能</p>
+                </div>
+            </div>
+
+            <div class="sub-page" id="publishPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">发布作品</div>
+                <div class="empty-state">
+                    <div class="empty-icon">📤</div>
+                    <h3>发布新作品</h3>
+                    <p>上传视频、编辑标题、添加话题标签</p>
+                </div>
+            </div>
+
+            <div class="sub-page" id="dataPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">数据中心</div>
+                <div class="empty-state">
+                    <div class="empty-icon">📈</div>
+                    <h3>详细数据统计</h3>
+                    <p>作品数据、粉丝数据、收益数据的详细分析</p>
+                </div>
+            </div>
+
+            <div class="sub-page" id="walletPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">我的钱包</div>
+                <div class="empty-state">
+                    <div class="empty-icon">💳</div>
+                    <h3>钱包管理</h3>
+                    <p>收益提现、账单明细、账户安全</p>
+                </div>
+            </div>
+
+            <div class="sub-page" id="settingsPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">创作者设置</div>
+                <div class="empty-state">
+                    <div class="empty-icon">⚙️</div>
+                    <h3>创作者设置</h3>
+                    <p>隐私设置、通知设置、账号安全</p>
+                </div>
+            </div>
+
+            <div class="sub-page" id="helpPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">创作学院</div>
+                <div class="empty-state">
+                    <div class="empty-icon">🎓</div>
+                    <h3>创作学院</h3>
+                    <p>创作教程、热门技巧、官方活动</p>
+                </div>
+            </div>
+
+            <div class="sub-page" id="worksPage">
+                <button class="back-sub-btn" onclick="backToCreatorMain()">← 返回创作者中心</button>
+                <div class="sub-page-title">我的作品</div>
+                <div class="works-grid">
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work1/400/300" alt="作品1" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 12.8w</span>
+                            <span>❤️ 2.5w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work2/400/300" alt="作品2" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 8.6w</span>
+                            <span>❤️ 1.8w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work3/400/300" alt="作品3" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 15.2w</span>
+                            <span>❤️ 3.1w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work4/400/300" alt="作品4" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 9.4w</span>
+                            <span>❤️ 1.2w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work5/400/300" alt="作品5" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 11.7w</span>
+                            <span>❤️ 2.8w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work6/400/300" alt="作品6" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 7.9w</span>
+                            <span>❤️ 1.5w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work7/400/300" alt="作品7" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 10.3w</span>
+                            <span>❤️ 2.1w</span>
+                        </div>
+                    </div>
+                    <div class="work-item">
+                        <img src="https://picsum.photos/seed/work8/400/300" alt="作品8" class="work-cover">
+                        <div class="work-stats">
+                            <span>👁️ 13.5w</span>
+                            <span>❤️ 2.9w</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 视频播放弹窗 -->
+        <div class="video-modal" id="videoModal">
+            <div class="modal-content">
+                <span class="close-btn" id="closeBtn">&times;</span>
+                <video class="modal-video" id="modalVideo" controls autoplay></video>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div id="footer">
+            <p>感谢大家努力学习，网页开发有你更精彩</p>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        const tabList = document.getElementById('tabList');
+        const backBtn = document.getElementById('backBtn');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoGrid = document.getElementById('videoGrid');
+        const loading = document.getElementById('loading');
+        const videoModal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        const closeBtn = document.getElementById('closeBtn');
+        
+        // 页码和加载状态
+        let page = 1;
+        let isLoading = false;
+        let currentActiveTab = 'recommend'; // 当前激活的选项卡
+
+        // 切换选项卡
+        function switchTab(tabId) {
+            // 隐藏所有内容区域
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // 移除所有选项卡激活状态
+            document.querySelectorAll('.tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 激活选中的选项卡和内容
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}Content`).classList.add('active');
+            
+            // 更新当前激活的选项卡
+            currentActiveTab = tabId;
+            
+            // 显示/隐藏返回按钮和视频标题
+            if (tabId !== 'recommend') {
+                backBtn.classList.add('show');
+                videoTitle.classList.remove('show');
+            } else {
+                backBtn.classList.remove('show');
+                videoTitle.classList.add('show');
+            }
+        }
+
+        // 返回推荐选项卡
+        function goBackToTab() {
+            switchTab('recommend');
+        }
+
+        // 切换到搜索选项卡（搜索框获得焦点时）
+        function switchToSearch() {
+            switchTab('search');
+        }
+
+        // 绑定选项卡点击事件
+        tabList.addEventListener('click', (e) => {
+            const tabItem = e.target.closest('.tab-item');
+            if (tabItem && tabItem.dataset.tab) {
+                switchTab(tabItem.dataset.tab);
+            }
+        });
+
+        // 创作者中心子页面切换
+        function switchCreatorSubPage(pageId) {
+            // 隐藏所有子页面
+            document.querySelectorAll('.sub-page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 隐藏创作者主页面
+            document.getElementById('creatorMain').classList.remove('active');
+            // 显示选中的子页面
+            document.getElementById(`${pageId}Page`).classList.add('active');
+        }
+
+        // 返回创作者中心主页面
+        function backToCreatorMain() {
+            // 隐藏所有子页面
+            document.querySelectorAll('.sub-page').forEach(page => {
+                page.classList.remove('active');
+            });
+            // 显示创作者主页面
+            document.getElementById('creatorMain').classList.add('active');
+        }
+
+        // 模拟短视频数据（使用网上公开的测试视频资源）
+        function getVideoData(page) {
+            const baseTitles = [
+                "治愈系风景短片",
+                "美食制作全过程",
+                "萌宠日常瞬间",
+                "创意手工教程",
+                "旅行vlog片段",
+                "搞笑瞬间合集",
+                "音乐卡点混剪",
+                "健身动作教学"
+            ];
+            
+            const videoSources = [
+                "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/elephants/mp4/h264/720/Elephants_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/cat/mp4/h264/720/Cat_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/dolphin/mp4/h264/720/Dolphin_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/horse/mp4/h264/720/Horse_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/goat/mp4/h264/720/Goat_720_10s_1MB.mp4",
+                "https://test-videos.co.uk/vids/rabbit/mp4/h264/720/Rabbit_720_10s_1MB.mp4"
+            ];
+            
+            // 封面图（使用picsum生成随机封面）
+            const coverBaseUrl = "https://picsum.photos/seed/";
+            
+            // 生成当前页的视频数据
+            return Array(4).fill().map((_, index) => {
+                const realIndex = (page - 1) * 4 + index;
+                return {
+                    id: `video-${page}-${index + 1}`,
+                    title: `${baseTitles[realIndex % baseTitles.length]} ${realIndex + 1}`,
+                    cover: `${coverBaseUrl}${realIndex + 100}/400/600`, // 竖版封面
+                    src: videoSources[realIndex % videoSources.length]
+                };
+            });
+        }
+
+        // 渲染视频卡片
+        function renderVideoCards(videos) {
+            videos.forEach(video => {
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.innerHTML = `
+                    <img src="${video.cover}" alt="${video.title}" class="video-cover">
+                    <div class="play-icon" data-src="${video.src}"></div>
+                    <div class="video-title">${video.title}</div>
+                `;
+                videoGrid.appendChild(card);
+                
+                // 绑定播放图标点击事件
+                const playIcon = card.querySelector('.play-icon');
+                playIcon.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 阻止事件冒泡
+                    playVideo(video.src);
+                });
+            });
+        }
+
+        // 播放视频（打开弹窗）
+        function playVideo(videoSrc) {
+            modalVideo.src = videoSrc;
+            videoModal.classList.add('show');
+            // 自动播放（需要用户交互后才能生效）
+            modalVideo.play().catch(err => {
+                console.log('自动播放失败，请手动点击播放:', err);
+            });
+        }
+
+        // 关闭视频弹窗
+        function closeVideoModal() {
+            videoModal.classList.remove('show');
+            modalVideo.pause();
+            modalVideo.src = ''; // 清空视频源
+        }
+
+        // 加载更多视频 - 优化：滚动到50%位置就加载
+        async function loadMoreVideos() {
+            if (isLoading || currentActiveTab !== 'recommend') return;
+            
+            isLoading = true;
+            loading.classList.add('show');
+            
+            // 模拟网络请求延迟
+            setTimeout(() => {
+                const videos = getVideoData(page);
+                renderVideoCards(videos);
+                page++;
+                isLoading = false;
+                loading.classList.remove('show');
+            }, 800);
+        }
+
+        // 监听滚动事件 - 优化：滚动到页面50%位置就加载更多
+        window.addEventListener('scroll', () => {
+            if (currentActiveTab !== 'recommend') return;
+            
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+            const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+            
+            // 计算滚动比例：当前滚动位置 / 总可滚动高度
+            const scrollRatio = scrollTop / (scrollHeight - clientHeight);
+            
+            // 当滚动到50%位置且未加载时，触发加载
+            if (scrollRatio >= 0.5 && !isLoading) {
+                loadMoreVideos();
+            }
+        });
+
+        // 初始化：加载第一页数据
+        loadMoreVideos();
+
+        // 绑定关闭按钮事件
+        closeBtn.addEventListener('click', closeVideoModal);
+        
+        // 点击弹窗外区域关闭
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                closeVideoModal();
+            }
+        });
+
+        // 键盘ESC关闭弹窗
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && videoModal.classList.contains('show')) {
+                closeVideoModal();
+            }
+        });
+    </script>
+</body>
+</html>
