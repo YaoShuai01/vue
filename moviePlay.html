@@ -1,0 +1,769 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>42娱乐站</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+/* 全局重置 & 恢复原有盒模型 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+/* 恢复原有背景图 */
+body {
+	background: url(img/background.jpg);
+	font-family: 'Helvetica Neue', sans-serif;
+	min-width: 320px;
+}
+#all {
+	width: 1036px;
+	margin: 0 auto;
+	margin-top: 25px;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+	overflow: hidden;
+}
+.clear {
+	clear: both;
+}
+
+/* 导航条 - 恢复原有背景 + 现代优化 */
+#head {
+	background: url(img/top-head-1.jpg);
+	height: 35px;
+	display: flex;
+	align-items: center;
+	overflow-x: auto;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+#head::-webkit-scrollbar {
+	display: none;
+}
+#head ul {
+	margin: 0 auto;
+	list-style: none;
+	white-space: nowrap;
+}
+#head ul li {
+	float: left;
+	padding: 0 20px;
+	line-height: 35px;
+	position: relative;
+}
+#head ul li a {
+	text-decoration: none;
+	color: white;
+	font-size: 14px;
+	padding-left: 50px;
+	border-left: 2px solid #c15f2c;
+	transition: color 0.2s ease;
+}
+#head ul li:first-child a {
+	border-left: none;
+}
+#head ul li a:hover {
+	color: #CCC;
+}
+
+/* 电影播放区 - 恢复原有高度 + 适配 */
+.moviePlay {
+	height: 500px;
+	background-color: white;
+	padding: 2px;
+	position: relative;
+}
+
+/* 同类电影 - 左图右文 + 压缩高度 + 不超播放框 */
+aside {
+	width: 210px;
+	float: right;
+	display: flex;
+	flex-direction: column;
+	gap: 10px; /* 缩小间距 */
+	max-height: 496px; /* 不超过播放框高度 */
+	overflow-y: auto; /* 超出滚动 */
+	padding-right: 5px;
+}
+aside h1 {
+	color: #999;
+	font-size: 16px;
+	font-weight: normal;
+	margin-bottom: 5px;
+}
+aside #recommend {
+	width: 100%;
+	display: flex;
+	gap: 8px; /* 图文间距 */
+	align-items: center;
+	padding: 8px;
+	background: white;
+	border-radius: 4px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+/* 海报左 */
+aside #recommend figure {
+	width: 60px;
+	height: 80px;
+	flex-shrink: 0;
+}
+aside #recommend figure img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 3px;
+}
+/* 文字右 */
+aside #recommend .text-wrap {
+	flex: 1;
+}
+aside #recommend figcaption {
+	color: black;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 1.2;
+	margin-bottom: 3px;
+}
+aside #recommend p {
+	font-size: 12px;
+	color: #ccc;
+	line-height: 1.2;
+}
+
+/* 视频容器 - 恢复原有宽度 + 全屏适配 */
+#video-wrap {
+	width: 800px;
+	float: left;
+	position: relative;
+	border-radius: 8px;
+	overflow: hidden;
+	background: #000;
+}
+#video {
+	width: 800px;
+	height: 450px;
+	object-fit: cover;
+	display: block;
+}
+
+/* 进度条 - 现代优化 */
+#progress-container {
+	width: 100%;
+	height: 4px;
+	background: rgba(255,255,255,0.2);
+	cursor: pointer;
+	position: relative;
+	transition: height 0.2s ease;
+}
+#progress-container:hover {
+	height: 8px;
+}
+#progress-value {
+	width: 0%;
+	height: 100%;
+	background: green;
+	position: relative;
+}
+#progress-value::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background: green;
+	opacity: 0;
+	transition: opacity 0.2s ease;
+}
+#progress-container:hover #progress-value::after {
+	opacity: 1;
+}
+
+/* 控制按钮栏 - 恢复位置 + 现代优化 + 全屏适配 */
+#control-bar {
+	width: 100%;
+	padding: 8px 10px;
+	background: rgba(0,0,0,0.05);
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	/* 全屏时默认隐藏，悬停显示 */
+	transition: all 0.3s ease;
+}
+/* 全屏状态样式 */
+body.fullscreen #all {
+	width: 100%;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	border-radius: 0;
+	background: #000;
+}
+body.fullscreen .moviePlay {
+	height: 100vh;
+	padding: 0;
+}
+body.fullscreen aside {
+	display: none; /* 全屏隐藏推荐电影 */
+}
+body.fullscreen #video-wrap {
+	width: 100%;
+	height: 100vh;
+	float: none;
+	border-radius: 0;
+}
+body.fullscreen #video {
+	width: 100%;
+	height: 100%;
+}
+/* 全屏时控制栏默认隐藏，悬停底部显示 */
+body.fullscreen #control-bar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	background: rgba(0,0,0,0.7);
+	opacity: 0;
+	pointer-events: none;
+}
+body.fullscreen #video-wrap:hover #control-bar {
+	opacity: 1;
+	pointer-events: all;
+}
+body.fullscreen #time-display {
+	color: white;
+}
+
+/* 控制按钮通用样式 - 增强hover效果 */
+.control-btn {
+	padding: 5px 12px;
+	border: none;
+	border-radius: 4px;
+	background: green;
+	color: white;
+	cursor: pointer;
+	font-size: 13px;
+	/* 增加过渡动画，让 hover 效果更平滑 */
+	transition: all 0.25s ease; 
+}
+/* 通用按钮 hover 样式 - 加深背景色+轻微上浮+阴影 */
+.control-btn:hover {
+	background: #2e7d32; /* 比原绿色更深 */
+	transform: translateY(-2px); /* 轻微上浮 */
+	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* 增加阴影 */
+}
+/* 点击时的按压效果 */
+.control-btn:active {
+	transform: translateY(0); /* 取消上浮 */
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 缩小阴影 */
+}
+
+/* 快进/快退按钮 - 差异化 hover 样式 */
+.scrub-btn {
+	background: #1b5e20; /* 初始深色 */
+}
+.scrub-btn:hover {
+	background: #154319; /* hover 更深 */
+}
+
+/* 全屏按钮 - 单独定制 hover 颜色 */
+#btnFullScreen {
+	background: #00796b; /* 初始青色 */
+}
+#btnFullScreen:hover {
+	background: #004d40; /* hover 深青色 */
+}
+
+/* 静音按钮 - 差异化 hover */
+#btnMute {
+	background: #388e3c; /* 初始浅绿 */
+}
+#btnMute:hover {
+	background: #2c6e2f; /* hover 深绿 */
+}
+/* 静音状态下的 hover 样式 */
+#btnMute.muted:hover {
+	background: #b71c1c; /* 静音时 hover 深红色 */
+}
+
+/* 播放按钮专属 hover 效果 */
+#btnPlay:hover {
+	background: #1976d2; /* 播放按钮 hover 变蓝色 */
+	transform: translateY(-2px) scale(1.05); /* 上浮+轻微放大 */
+}
+
+/* 倍速下拉框 hover/focus 样式 */
+#speedSelect {
+	padding: 5px 8px;
+	border: 1px solid #e2e8f0;
+	border-radius: 4px;
+	background: white;
+	color: #333;
+	font-size: 12px;
+	transition: all 0.2s ease;
+}
+#speedSelect:hover, #speedSelect:focus {
+	border-color: #2e7d32; /* hover/focus 时边框变绿色 */
+	outline: none;
+	box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2); /* 高亮边框 */
+}
+/* 全屏时下拉框样式适配 */
+body.fullscreen #speedSelect {
+	background: #333;
+	color: white;
+	border-color: #555;
+}
+body.fullscreen #speedSelect:hover, 
+body.fullscreen #speedSelect:focus {
+	border-color: #2e7d32;
+	box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.3);
+}
+
+/* 时间显示 */
+#time-display {
+	font-size: 12px;
+	color: #666;
+	margin-left: auto;
+}
+
+/* 播放控制半透明提示弹窗 */
+#tip-popup {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgba(0,0,0,0.7);
+	color: white;
+	padding: 10px 20px;
+	border-radius: 6px;
+	font-size: 14px;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease;
+	z-index: 20;
+}
+#tip-popup.show {
+	opacity: 1;
+}
+
+/* 页脚 - 恢复原有背景 */
+#footer {
+	height: 186px;
+	background-image: url(img/footer.jpg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	clear: both;
+}
+body.fullscreen #footer {
+	display: none; /* 全屏隐藏页脚 */
+}
+#footer p {
+	text-align: center;
+	color: #CCC;
+	font-size: 14px;
+	padding-top: 0;
+}
+
+/* 响应式适配 - 缩放优化 */
+@media (max-width: 1060px) {
+	#all {
+		width: 96%;
+	}
+	#video-wrap {
+		width: calc(100% - 220px);
+	}
+	#video {
+		width: 100%;
+	}
+}
+@media (max-width: 768px) {
+	aside {
+		width: 100%;
+		float: none;
+		max-height: 200px;
+		flex-direction: row;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-top: 10px;
+	}
+	#video-wrap {
+		width: 100%;
+		float: none;
+	}
+	#video {
+		height: 280px;
+	}
+	#head ul li a {
+		padding-left: 20px;
+	}
+}
+</style>
+</head> 
+
+<body>
+<div id="all">
+<div id="top"> 
+  <!-- 导航条 -->
+  <div id="head">
+    <ul>
+      <li><a href="index.html" style="border-left:none">首页</a></li>
+      <li><a href="list.html">热门电影</a></li>
+      <li><a href="detail.html">电影详情</a></li>
+      <li><a href="moviePlay.html">影视播放</a></li>
+      <li><a href="register.html">登录注册</a></li>
+	  <li><a href="short-video.html" style="color: #fff;">短视频专区</a></li>
+    </ul>
+  </div>
+  <div class=" clear"></div>
+  
+  <!-- 电影播放区 -->
+  <div class="moviePlay">
+    <!-- 同类电影 - 左图右文 -->
+    <aside>
+      <h1>同类电影</h1>
+      <section id="recommend">
+        <figure> <img src="img\wolf2.png" alt="推荐电影"> </figure>
+        <div class="text-wrap">
+          <figcaption>战狼</figcaption>
+          <p>惊险刺激</p>
+        </div>
+      </section>
+      <section id="recommend">
+        <figure> <img src="img\GuardiansoftheGalaxy.png" alt="推荐电影"> </figure>
+        <div class="text-wrap">
+          <figcaption>银河护卫队</figcaption>
+          <p>脑洞大开</p>
+        </div>
+      </section>
+      <section id="recommend">
+        <figure> <img src="img\6.jpg" alt="推荐电影"> </figure>
+        <div class="text-wrap">
+          <figcaption>冰河世纪</figcaption>
+          <p>萌萌象大冒险</p>
+        </div>
+      </section>
+      <!-- 可添加更多电影 -->
+      <section id="recommend">
+        <figure> <img src="img\wolf2.png" alt="推荐电影"> </figure>
+        <div class="text-wrap">
+          <figcaption>战狼2</figcaption>
+          <p>热血沸腾</p>
+        </div>
+      </section>
+    </aside>
+
+    <!-- 视频+控制区 -->
+    <div id="video-wrap">
+      <video id="video" src="video.webm"> 您的浏览器不支持video元素 </video>
+      <!-- 控制提示弹窗 -->
+      <div id="tip-popup"></div>
+      
+      <!-- 进度条 -->
+      <div id="progress-container">
+        <div id="progress-value"></div>
+      </div>
+      
+      <!-- 控制按钮栏 - 新增全屏按钮 -->
+      <div id="control-bar">
+        <button class="control-btn scrub-btn" id="btnRewind">快退10s</button>
+        <button class="control-btn" id="btnPlay">播放</button>
+        <button class="control-btn scrub-btn" id="btnForward">快进10s</button>
+        
+        <select id="speedSelect" class="control-btn">
+          <option value="0.25">0.25x</option>
+          <option value="0.5">0.5x</option>
+          <option value="1" selected>1x</option>
+          <option value="1.5">1.5x</option>
+          <option value="2">2x</option>
+        </select>
+        
+        <button class="control-btn" id="btnMute">静音</button>
+        <!-- 新增全屏按钮 -->
+        <button class="control-btn" id="btnFullScreen">全屏播放</button>
+        
+        <div id="time-display">00:00:00 / 00:00:00</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 页脚 -->
+  <div id="footer">
+    <p>感谢大家努力学习，网页开发有你更精彩</p>
+  </div>
+</div>
+
+<script type="text/javascript"> 
+var video = document.getElementById("video");
+var isPlaying = false;
+var volume = 1;
+var isMuted = false;
+var rewindInterval, forwardInterval;
+var isDragging = false;
+var isFullScreen = false; // 全屏状态标识
+
+// DOM元素
+var btnPlay = document.getElementById("btnPlay");
+var btnMute = document.getElementById("btnMute");
+var btnRewind = document.getElementById("btnRewind");
+var btnForward = document.getElementById("btnForward");
+var speedSelect = document.getElementById("speedSelect");
+var progressContainer = document.getElementById("progress-container");
+var progressValue = document.getElementById("progress-value");
+var timeDisplay = document.getElementById("time-display");
+var tipPopup = document.getElementById("tip-popup");
+var btnFullScreen = document.getElementById("btnFullScreen"); // 全屏按钮
+var videoWrap = document.getElementById("video-wrap");
+var body = document.body;
+
+// 显示提示弹窗
+function showTip(text) {
+  tipPopup.textContent = text;
+  tipPopup.classList.add("show");
+  setTimeout(() => {
+    tipPopup.classList.remove("show");
+  }, 1500);
+}
+
+// 全屏切换函数
+function toggleFullScreen() {
+  if (!isFullScreen) {
+    // 进入全屏
+    if (videoWrap.requestFullscreen) {
+      videoWrap.requestFullscreen();
+    } else if (videoWrap.webkitRequestFullscreen) { // 兼容webkit内核
+      videoWrap.webkitRequestFullscreen();
+    } else if (videoWrap.msRequestFullscreen) { // 兼容IE/Edge
+      videoWrap.msRequestFullscreen();
+    }
+    body.classList.add("fullscreen");
+    btnFullScreen.innerHTML = "退出全屏";
+    isFullScreen = true;
+    showTip("已进入全屏模式");
+  } else {
+    // 退出全屏
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+    body.classList.remove("fullscreen");
+    btnFullScreen.innerHTML = "全屏播放";
+    isFullScreen = false;
+    showTip("已退出全屏模式");
+  }
+}
+
+// 监听全屏状态变化
+document.addEventListener("fullscreenchange", function() {
+  isFullScreen = !!document.fullscreenElement;
+  if (!isFullScreen) {
+    body.classList.remove("fullscreen");
+    btnFullScreen.innerHTML = "全屏播放";
+  }
+});
+document.addEventListener("webkitfullscreenchange", function() {
+  isFullScreen = !!document.webkitFullscreenElement;
+  if (!isFullScreen) {
+    body.classList.remove("fullscreen");
+    btnFullScreen.innerHTML = "全屏播放";
+  }
+});
+document.addEventListener("msfullscreenchange", function() {
+  isFullScreen = !!document.msFullscreenElement;
+  if (!isFullScreen) {
+    body.classList.remove("fullscreen");
+    btnFullScreen.innerHTML = "全屏播放";
+  }
+});
+
+// 初始化
+video.addEventListener('loadedmetadata', function() {
+  updateProgress();
+  updateTimeDisplay();
+  // 启用按钮
+  btnPlay.disabled = false;
+  btnMute.disabled = false;
+  speedSelect.disabled = false;
+  btnRewind.disabled = false;
+  btnForward.disabled = false;
+  btnFullScreen.disabled = false; // 启用全屏按钮
+});
+
+// 播放/暂停 - 带提示
+btnPlay.addEventListener('click', function() {
+  if (video.paused) {
+    video.play();
+    isPlaying = true;
+    btnPlay.innerHTML = "暂停";
+    showTip("正在播放");
+  } else {
+    video.pause();
+    isPlaying = false;
+    btnPlay.innerHTML = "播放";
+    showTip("已暂停");
+  }
+});
+
+// 静音切换 - 带提示 + 新增muted类名控制hover
+btnMute.addEventListener('click', function() {
+  isMuted = !isMuted;
+  video.muted = isMuted;
+  btnMute.innerHTML = isMuted ? "取消静音" : "静音";
+  // 新增：添加/移除 muted 类名
+  if(isMuted) {
+      btnMute.classList.add("muted");
+      btnMute.style.background = "#d32f2f";
+  } else {
+      btnMute.classList.remove("muted");
+      btnMute.style.background = "#388e3c";
+  }
+  showTip(isMuted ? "已静音" : "取消静音");
+});
+
+// 倍速切换 - 带提示
+speedSelect.addEventListener('change', function() {
+  var speed = parseFloat(this.value);
+  video.playbackRate = speed;
+  this.style.borderColor = "#2e7d32";
+  setTimeout(() => {
+    this.style.borderColor = "#e2e8f0";
+  }, 500);
+  showTip(`当前倍速：${speed}x`);
+});
+
+// 快退 - 点击+长按 + 提示
+btnRewind.addEventListener('click', function() {
+  video.currentTime = Math.max(0, video.currentTime - 10);
+  updateProgress();
+  showTip("快退10秒");
+  this.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    this.style.transform = "translateY(-1px)";
+  }, 100);
+});
+btnRewind.addEventListener('mousedown', function() {
+  rewindInterval = setInterval(function() {
+    video.currentTime = Math.max(0, video.currentTime - 0.5);
+    updateProgress();
+  }, 50);
+});
+btnRewind.addEventListener('mouseup', function() {
+  clearInterval(rewindInterval);
+});
+btnRewind.addEventListener('mouseleave', function() {
+  clearInterval(rewindInterval);
+});
+
+// 快进 - 点击+长按 + 提示
+btnForward.addEventListener('click', function() {
+  video.currentTime = Math.min(video.duration, video.currentTime + 10);
+  updateProgress();
+  showTip("快进10秒");
+  this.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    this.style.transform = "translateY(-1px)";
+  }, 100);
+});
+btnForward.addEventListener('mousedown', function() {
+  forwardInterval = setInterval(function() {
+    video.currentTime = Math.min(video.duration, video.currentTime + 0.5);
+    updateProgress();
+  }, 50);
+});
+btnForward.addEventListener('mouseup', function() {
+  clearInterval(forwardInterval);
+});
+btnForward.addEventListener('mouseleave', function() {
+  clearInterval(forwardInterval);
+});
+
+// 进度条点击+拖动
+progressContainer.addEventListener('click', function(e) {
+  var pos = (e.pageX - this.getBoundingClientRect().left) / this.offsetWidth;
+  video.currentTime = pos * video.duration;
+  updateProgress();
+  showTip("已跳转至指定位置");
+});
+progressContainer.addEventListener('mousedown', function() {
+  isDragging = true;
+  video.pause();
+  progressValue.style.background = "#2e7d32";
+});
+document.addEventListener('mousemove', function(e) {
+  if (isDragging) {
+    var rect = progressContainer.getBoundingClientRect();
+    var pos = (e.pageX - rect.left) / rect.width;
+    pos = Math.max(0, Math.min(1, pos));
+    video.currentTime = pos * video.duration;
+    updateProgress();
+  }
+});
+document.addEventListener('mouseup', function() {
+  if (isDragging) {
+    isDragging = false;
+    progressValue.style.background = "green";
+    if (isPlaying) {
+      video.play();
+      showTip("继续播放");
+    }
+  }
+});
+
+// 绑定全屏按钮点击事件
+btnFullScreen.addEventListener('click', toggleFullScreen);
+
+// 视频播放时更新进度
+video.addEventListener('timeupdate', updateProgress);
+video.addEventListener('ended', function() {
+  video.currentTime = 0;
+  video.pause();
+  isPlaying = false;
+  btnPlay.innerHTML = "播放";
+  showTip("播放完毕");
+});
+
+// 更新进度条和时间
+function updateProgress() {
+  if (!video.duration) return;
+  var percent = (video.currentTime / video.duration) * 100;
+  progressValue.style.width = percent + "%";
+  updateTimeDisplay();
+}
+
+// 格式化时间
+function formatTime(sec) {
+  sec = Math.floor(sec);
+  var h = Math.floor(sec / 3600);
+  var m = Math.floor((sec % 3600) / 60);
+  var s = sec % 60;
+  return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':');
+}
+
+// 更新时间显示
+function updateTimeDisplay() {
+  var current = formatTime(video.currentTime);
+  var total = formatTime(video.duration);
+  timeDisplay.innerHTML = `${current} / ${total}`;
+}
+
+// 错误处理
+video.addEventListener('error', function() {
+  var error = video.error;
+  switch(error.code) {
+    case 1: alert("视频下载被中止"); break;
+    case 2: alert("网络故障，下载中止"); break;
+    case 3: alert("视频解码失败"); break;
+    case 4: alert("媒体格式不支持或资源不可用"); break;
+  }
+});
+</script>
+</body>
+</html>

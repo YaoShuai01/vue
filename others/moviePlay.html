@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电影播放页面</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+       body {
+       	background: url(../img/background.jpg)
+       }
+
+        /* 顶部导航栏样式 */
+        .nav-bar {
+            background-color: #c81623; /* 主色调红色 */
+            height: 50px;
+            line-height: 50px;
+            padding: 0 20px;
+        }
+
+        .nav-bar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-bar li {
+            margin-right: 1px;
+        }
+
+        .nav-bar a {
+            display: block;
+            padding: 0 25px;
+            color: #fff;
+            text-decoration: none;
+            background-color: #e59300; /* 橙色按钮背景 */
+            font-size: 14px;
+        }
+
+        .nav-bar a:hover {
+            background-color: #ffb400;
+        }
+
+        /* 主内容容器 */
+        .container {
+            display: flex;
+            width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+
+        /* 左侧视频播放区 */
+        .video-section {
+            flex: 3;
+            margin-right: 20px;
+        }
+
+        /* 视频播放器容器 */
+        .video-player {
+            width: 100%;
+            height: 450px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 视频元素样式 */
+        #movie-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 操作提示层 */
+        .video-tip {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 24px;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 15px 30px;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 音量条 */
+        .volume-bar {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 120px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .volume-progress {
+            width: 100%;
+            height: 70%;
+            background-color: #4cd964;
+            border-radius: 2px;
+        }
+
+        .video-player:hover .volume-bar {
+            opacity: 1;
+        }
+
+        /* 进度条样式 - 优化拖动体验 */
+        .progress-bar {
+            height: 8px;
+            background-color: #ccc;
+            margin: 10px 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: #4cd964;
+            position: relative;
+        }
+
+        .progress-thumb {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #fff;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            display: none;
+        }
+
+        .progress-bar:hover .progress-thumb {
+            display: block;
+        }
+
+        /* 控制按钮区 */
+        .control-btns {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-btns button, .control-btns select {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        .control-btns button:hover, .control-btns select:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 倍速下拉框样式 */
+        #speed-select {
+            min-width: 80px;
+        }
+
+        /* 快进快退按钮样式 */
+        .skip-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+        }
+
+        /* 右侧同类电影推荐区 */
+        .recommend-section {
+            flex: 1;
+        }
+
+        .recommend-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            border-left: 4px solid #c81623;
+            padding-left: 10px;
+        }
+
+        .movie-list {
+            list-style: none;
+        }
+
+        .movie-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .movie-item img {
+            width: 60px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .movie-info h3 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .movie-info p {
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="nav-bar">
+        <ul>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">热门电影</a></li>
+            <li><a href="#">电影详情</a></li>
+            <li><a href="#">影视播放</a></li>
+            <li><a href="#">登录/注册</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        <!-- 左侧视频播放区 -->
+        <div class="video-section">
+            <div class="video-player">
+                <!-- 视频元素 -->
+                <video id="movie-video" src="video.webm" preload="metadata"></video>
+                <!-- 操作提示层 -->
+                <div class="video-tip" id="video-tip"></div>
+                <!-- 音量条 -->
+                <div class="volume-bar">
+                    <div class="volume-progress" id="volume-progress"></div>
+                </div>
+            </div>
+            
+            <!-- 进度条（新增拖动滑块） -->
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress" id="progress">
+                    <div class="progress-thumb" id="progress-thumb"></div>
+                </div>
+            </div>
+            
+            <!-- 控制按钮区（新增快进快退、倍速下拉） -->
+            <div class="control-btns">
+                <button id="play-pause">播放</button>
+                <button id="rewind" class="skip-btn">快退 5s</button>
+                <button id="forward" class="skip-btn">快进 5s</button>
+                <!-- 倍速下拉选择框 -->
+                <select id="speed-select">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.8">0.8x</option>
+                    <option value="1.0" selected>1.0x</option>
+                    <option value="1.2">1.2x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2.0">2.0x</option>
+                </select>
+                <button id="mute">静音</button>
+                <button id="volume-up">增大音量</button>
+                <button id="volume-down">降低音量</button>
+            </div>
+        </div>
+
+        <!-- 右侧同类电影推荐区 -->
+        <div class="recommend-section">
+            <h2 class="recommend-title">同类电影</h2>
+            <ul class="movie-list">
+                <li class="movie-item">
+                    <img src="../img/wolf2.png" alt="战狼">
+                    <div class="movie-info">
+                        <h3>战狼</h3>
+                        <p>惊险刺激</p>
+                    </div>
+                </li>
+                <li class="movie-item">
+                    <img src="../img/GuardiansoftheGalaxy.png" alt="银河护卫队">
+                    <div class="movie-info">
+                        <h3>银河护卫队</h3>
+                        <p>脑开</p>
+                    </div>
+                </li>
+                <li class="movie-item">
+                    <img src="../img/6.jpg" alt="冰河世纪">
+                    <div class="movie-info">
+                        <h3>冰河世纪</h3>
+                        <p>萌萌象大冒险</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ========== 核心元素获取 ==========
+        const video = document.getElementById('movie-video');
+        const playPauseBtn = document.getElementById('play-pause');
+        const rewindBtn = document.getElementById('rewind'); // 快退按钮
+        const forwardBtn = document.getElementById('forward'); // 快进按钮
+        const speedSelect = document.getElementById('speed-select'); // 倍速下拉框
+        const muteBtn = document.getElementById('mute');
+        const volumeUpBtn = document.getElementById('volume-up');
+        const volumeDownBtn = document.getElementById('volume-down');
+        const progressBar = document.getElementById('progress-bar');
+        const progress = document.getElementById('progress');
+        const progressThumb = document.getElementById('progress-thumb');
+        const videoTip = document.getElementById('video-tip');
+        const volumeProgress = document.getElementById('volume-progress');
+
+        // ========== 全局变量 ==========
+        let tipTimer = null; // 提示定时器
+        let isDragging = false; // 是否拖动进度条
+        let rewindInterval = null; // 快退定时器
+        let forwardInterval = null; // 快进定时器
+        const skipStep = 5; // 快进/快退步长（秒）
+
+        // ========== 工具函数 ==========
+        // 显示播放区提示
+        function showTip(text) {
+            videoTip.textContent = text;
+            videoTip.style.opacity = 1;
+            clearTimeout(tipTimer);
+            tipTimer = setTimeout(() => {
+                videoTip.style.opacity = 0;
+            }, 1500);
+        }
+
+        // 更新音量条
+        function updateVolumeBar() {
+            const volumePercent = video.volume * 100;
+            volumeProgress.style.height = `${volumePercent}%`;
+        }
+
+        // 更新进度条（含滑块）
+        function updateProgressBar() {
+            if (!isNaN(video.duration)) {
+                const progressPercent = (video.currentTime / video.duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+            }
+        }
+
+        // ========== 播放/暂停功能 ==========
+        playPauseBtn.addEventListener('click', () => {
+            if (video.paused) {
+                video.play();
+                playPauseBtn.textContent = '暂停';
+                showTip('播放中');
+            } else {
+                video.pause();
+                playPauseBtn.textContent = '播放';
+                showTip('已暂停');
+            }
+        });
+
+        // ========== 倍速下拉选择功能 ==========
+        speedSelect.addEventListener('change', () => {
+            const selectedSpeed = parseFloat(speedSelect.value);
+            video.playbackRate = selectedSpeed;
+            showTip(`${selectedSpeed}倍速`);
+        });
+
+        // ========== 快进/快退功能（支持按住持续快进/快退） ==========
+        // 快退按钮 - 按下
+        rewindBtn.addEventListener('mousedown', () => {
+            // 单次快退5秒
+            video.currentTime = Math.max(video.currentTime - skipStep, 0);
+            showTip(`快退 ${skipStep}s`);
+            updateProgressBar();
+            // 按住持续快退（每100ms退1秒）
+            rewindInterval = setInterval(() => {
+                video.currentTime = Math.max(video.currentTime - 1, 0);
+                updateProgressBar();
+            }, 100);
+        });
+
+        // 快进按钮 - 按下
+        forwardBtn.addEventListener('mousedown', () => {
+            // 单次快进5秒
+            video.currentTime = Math.min(video.currentTime + skipStep, video.duration);
+            showTip(`快进 ${skipStep}s`);
+            updateProgressBar();
+            // 按住持续快进（每100ms进1秒）
+            forwardInterval = setInterval(() => {
+                video.currentTime = Math.min(video.currentTime + 1, video.duration);
+                updateProgressBar();
+            }, 100);
+        });
+
+        // 鼠标松开/离开时停止持续快进/快退
+        document.addEventListener('mouseup', () => {
+            clearInterval(rewindInterval);
+            clearInterval(forwardInterval);
+        });
+        document.addEventListener('mouseleave', () => {
+            clearInterval(rewindInterval);
+            clearInterval(forwardInterval);
+        });
+
+        // ========== 静音/音量控制 ==========
+        muteBtn.addEventListener('click', () => {
+            video.muted = !video.muted;
+            muteBtn.textContent = video.muted ? '取消静音' : '静音';
+            showTip(video.muted ? '已静音' : '取消静音');
+            updateVolumeBar();
+        });
+
+        volumeUpBtn.addEventListener('click', () => {
+            if (video.volume < 1.0) {
+                video.volume = Math.min(video.volume + 0.1, 1.0);
+                updateVolumeBar();
+                showTip(`音量 ${Math.round(video.volume * 100)}%`);
+            } else {
+                showTip('已达最大音量');
+            }
+            if (video.muted) {
+                video.muted = false;
+                muteBtn.textContent = '静音';
+            }
+        });
+
+        volumeDownBtn.addEventListener('click', () => {
+            if (video.volume > 0.0) {
+                video.volume = Math.max(video.volume - 0.1, 0.0);
+                updateVolumeBar();
+                showTip(`音量 ${Math.round(video.volume * 100)}%`);
+            } else {
+                showTip('已达最小音量');
+            }
+            if (video.muted) {
+                video.muted = false;
+                muteBtn.textContent = '静音';
+            }
+        });
+
+        // ========== 进度条拖动功能（实时同步画面） ==========
+        // 鼠标按下开始拖动
+        progressBar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            // 立即更新进度和视频位置
+            updateProgressByMouse(e);
+        });
+
+        // 鼠标移动时更新（拖动中）
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                updateProgressByMouse(e);
+                // 拖动时视频画面实时变化（即使暂停也更新）
+                video.currentTime = (getMousePercent(e) / 100) *

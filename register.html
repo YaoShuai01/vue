@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>登录和注册</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link href="css/popup-box.css" rel="stylesheet" type="text/css" media="all" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</script><script src="js/jquery.min.js"></script>
+<script src="js/jquery.magnific-popup.js" type="text/javascript"></script>
+
+<script>
+	$(document).ready(function() {
+		$('.popup-with-zoom-anim').magnificPopup({
+			type: 'inline',
+			fixedContentPos: false,
+			fixedBgPos: true,
+			overflowY: 'auto',
+			closeBtnInside: true,
+			preloader: false,
+			midClick: true,
+			removalDelay: 300,
+			mainClass: 'my-mfp-zoom-in'
+		});
+
+	});
+</script>	
+<SCRIPT LANGUAGE="JavaScript">
+function login(){
+   var us1=  localStorage.getItem("username");
+   var pw1=localStorage.getItem("password");
+   var us2=document.f2.user.value;
+   var pw2=document.f2.pw.value;
+   if(us1==us2&&pw1==pw2){
+		alert("登录成功");
+		window.opener.user.innerHTML="欢迎，"+us2;
+		//window.opener.location="register.html"  
+   }
+   else alert("用户名或密码不合法");
+   self.close();
+}
+function reg(){
+    var username=document.f1.user.value;
+	var password=document.f1.pw.value;
+    localStorage.setItem("username",username);
+   localStorage.setItem("password",password);
+   alert("注册成功");
+   self.close();
+}
+</SCRIPT>
+</head>
+<body>
+	<h1>登录和注册</h1>
+	<div class="w3layouts">
+		<div class="signin-agile">
+			<h2>登录
+			</h2>
+			<form name="f1">
+				<input type="text" name="user" class="name" placeholder="用户名" required>
+				<input type="password" name="pw" class="password" placeholder="密码" required>
+				<div class="clear"></div>
+				<input type="submit" value="登录" onclick="login()">
+			</form>
+		</div>
+		<div class="signup-agileinfo">
+			<h3>42影视网站</h3>
+			<p>本影视网站包括首页、热门电影、电影详情、影视播放、注册登录几大模块，使用HTML+CSS+JS进行开发，主要是向用户提供一个方便快捷高效的影视观赏平台，全面支持视频、音乐、动画。希望大家努力学习，网页开发有你更精彩！</p>
+			<div class="more">
+				<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog">点击注册</a>				
+			</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="footer-w3l">
+		<p class="agileinfo"> 登录和注册 </p>
+	</div>
+	<div class="pop-up"> 
+		<div id="small-dialog" class="mfp-hide book-form">
+			<h3>注册表单 </h3>
+			<form  name="f2" >
+				<input type="text" name="user" placeholder="用户名" required/>
+				<input type="text" name="Email" class="email" placeholder="邮件" required/>
+				<input type="password" name="pw" class="password" placeholder="密码" required/>
+				<input type="password" name="Password" class="password" placeholder="重复密码" required/>					
+				<input type="submit" value="点击注册"   onclick="reg()">
+			</form>
+		</div>
+	</div>	
+    
+	<body>
+</html>
